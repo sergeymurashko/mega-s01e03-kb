@@ -1,0 +1,53 @@
+---
+layout: runbook
+title: '#4471 · one ticket, three problems'
+owner: support desk
+status: known
+reviewed: 2026-11-01
+signature: v1.eyJzdWIiOiIxOTgxIiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM1NTAxODQsImV4cCI6MTc5MzYzNjU4NH0.jzqa9MKSx9RMTgH8XUZdQqk7L1BMAENVD7EIZzam76c
+---
+
+<script>
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+#4471 holds **412 reports** (427 rows in the export; 15 are repeats of an id). They are not one bug.
+They were merged because they look alike: a date on the wrong day. Read by tenant and by body,
+they are three problems.
+
+<Callout>
+Not one known issue. Three problems, and only one has a fix queued.
+</Callout>
+
+## The three problems
+
+| problem | reports | what happens | who |
+| --- | --- | --- | --- |
+| **parser** | 374 | The shared parser reads every date month first, so day-first tenants get flipped dates. This is what #4471 was opened for. | all 11 tenants |
+| **hint** | 33 | `booking-v3` prints `MM/DD/YYYY` under its date field. People at day-first tenants type what the hint says, and the form reads it their way. A different bug: fixing the parser does not fix it. | alder.physio, copper.studio, pale.harbour (form channel only) |
+| **one-day move** | 5 | The date is off by exactly one day, not flipped (R-41202, R-41209, R-41236, R-41344, R-41620). It looks like a time zone problem. A month flip cannot explain it. | kettle.books, alder.physio, nine.lanterns, pale.harbour, lantern.row |
+
+374 + 33 + 5 = 412.
+
+## What the table below counts
+
+The table is computed from the export. It files the 5 one-day-move reports under `parser`, because
+it sorts by tenant and channel only, so it shows 379 `parser` reports. The 5 are footnoted under it.
+Remove them and `parser` is 374.
+
+<CauseTable ticket={4471} />
+
+## Intake tags
+
+Intake guessed the cause from the reporter's browser. It is wrong often: 15 of the 33 `hint` reports
+were tagged `parser`, and 23 of the 379 `parser` reports were tagged `hint`. Do not triage on the tag.
+
+## Lessons
+
+- Reports that look alike are not one bug. Count by cause, not by subject line (see [triage](/kb/triage/dedupe)).
+- Read the body. The 5 one-day moves share a subject with the flips and nothing else.
+
+
+<RenderStamp {signature} />
