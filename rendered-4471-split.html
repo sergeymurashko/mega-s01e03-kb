@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>#4471 · one ticket, three problems</title>
+<style>body{font:16px/1.5 system-ui;max-width:46rem;margin:2rem auto;padding:0 1rem}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:.3rem .5rem;text-align:left;vertical-align:top}.wrong td{background:#fff3e0}.note,.tags{color:#666;font-size:.85em}.stamp{font:.85rem monospace;color:#666}</style>
+<h1>#4471 · one ticket, three problems</h1>
+<p><small>owner: support desk · status: known · reviewed: 2026-11-01. Static copy of <code>src/routes/kb/incidents/4471-split/+page.svx</code>; the table is the output of <code>CauseTable</code>'s logic (<code>causes.ts</code>) run on the export.</small></p>
+<p>#4471 holds <b>412 reports</b> (427 rows in the export; 15 are repeats of an id). They are not one bug. They were merged because they look alike: a date on the wrong day. Read by tenant and by body, they are three problems.</p>
+<blockquote><b>Not one known issue. Three problems, and only one has a fix queued.</b></blockquote>
+<h2>The three problems</h2>
+<table><tr><th>problem</th><th>reports</th><th>what happens</th><th>who</th></tr>
+<tr><td><b>parser</b></td><td>374</td><td>The shared parser reads every date month first, so day-first tenants get flipped dates. This is what #4471 was opened for.</td><td>all 11 tenants</td></tr>
+<tr><td><b>hint</b></td><td>33</td><td><code>booking-v3</code> prints <code>MM/DD/YYYY</code> under its date field. People at day-first tenants type what the hint says, and the form reads it their way. A different bug: fixing the parser does not fix it.</td><td>alder.physio, copper.studio, pale.harbour (form channel only)</td></tr>
+<tr><td><b>one-day move</b></td><td>5</td><td>The date is off by exactly one day, not flipped (R-41202, R-41209, R-41236, R-41344, R-41620). It looks like a time zone problem.</td><td>kettle.books, alder.physio, nine.lanterns, pale.harbour, lantern.row</td></tr></table>
+<p>374 + 33 + 5 = 412.</p>
+<h2>What the table below counts</h2>
+<p>The table is computed from the export. It files the 5 one-day-move reports under <code>parser</code>, because it sorts by tenant and channel only, so it shows 379 <code>parser</code> reports. The 5 are footnoted under it. Remove them and <code>parser</code> is 374.</p>
+<p><b>412</b> reports merged into #4471 · <b>2</b> causes</p>
+<table><tr><th>cause</th><th>reports</th><th>tagged as</th><th>tenants</th><th>seen</th><th></th></tr>
+<tr><td><code>parser</code></td><td>379</td><td class="tags">parser ×356 · hint ×23</td><td>11</td><td>2026-04-01 → 2026-10-04</td><td>#4471</td></tr>
+<tr class="wrong"><td><code>hint</code></td><td>33</td><td class="tags">hint ×18 · parser ×15</td><td>3</td><td>2026-04-17 → 2026-09-22</td><td>not this ticket — no ticket of its own</td></tr></table>
+<p class="note">5 reports read as a one-day move; filed under <code>parser</code> by tenant.</p>
+<h2>Intake tags</h2>
+<p>Intake guessed the cause from the reporter's browser. It is wrong often: 15 of the 33 <code>hint</code> reports were tagged <code>parser</code>, and 23 of the 379 <code>parser</code> reports were tagged <code>hint</code>. Do not triage on the tag.</p>
+<h2>Lessons</h2>
+<ul><li>Reports that look alike are not one bug. Count by cause, not by subject line.</li><li>Read the body. The 5 one-day moves share a subject with the flips and nothing else.</li></ul>
+<p class="stamp">desk ref <b>DR-H4XS-CEJP</b></p>
+</html>
